@@ -44,6 +44,7 @@ export const useProjectsStore = defineStore("projects", () => {
         id: uuidv4(),
         name: taskName,
         completed: false,
+        completedAt: null,
       });
     }
   }
