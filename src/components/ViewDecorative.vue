@@ -1,7 +1,6 @@
 <template>
   <div class="p-6 bg-teal-100 min-h-screen">
     <div class="overflow-x-auto">
-      <!-- Mostrar tareas del proyecto seleccionado -->
       <template v-if="projectsStore.selectedProject">
         <h2 class="text-xl font-bold mb-4">
           Tareas de: {{ projectsStore.selectedProject.name }}
@@ -13,6 +12,7 @@
               <th>#</th>
               <th>Nombre</th>
               <th>Completado</th>
+              <th>Fecha de completado</th>
             </tr>
           </thead>
           <tbody>
@@ -26,9 +26,11 @@
                 <input
                   type="checkbox"
                   class="checkbox checkbox-success"
-                  v-model="task.completed"
+                  :checked="task.completed"
+                  @change="toggleTaskCompleted(task)"
                 />
               </td>
+              <td>{{ task.completedAt || '-' }}</td>
             </tr>
           </tbody>
         </table>
@@ -39,8 +41,6 @@
         >
           Sin tareas
         </p>
-
-        <!-- Agregar nueva tarea -->
         <div class="flex items-center gap-2 mt-4">
           <input
             v-model="newTaskName"
@@ -57,7 +57,6 @@
         </button>
       </template>
 
-      <!-- Mostrar tabla de proyectos si no hay ninguno seleccionado -->
       <template v-else>
         <table class="table w-full">
           <thead>
@@ -115,6 +114,11 @@ function getProjectProgress(project) {
   const total = tasks.length;
   const completed = tasks.filter((t) => t.completed).length;
   return total === 0 ? 0 : Math.round((completed / total) * 100);
+}
+
+function toggleTaskCompleted(task) {
+  task.completed = !task.completed;
+  task.completedAt = task.completed ? new Date().toLocaleString() : null;
 }
 
 watch(
